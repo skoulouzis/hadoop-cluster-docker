@@ -1,11 +1,21 @@
-FROM ubuntu:14.04
+FROM ubuntu:latest
 
 MAINTAINER KiwenLau <kiwenlau@gmail.com>
 
-WORKDIR /root
 
-# install openssh-server, openjdk and wget
-RUN apt-get update && apt-get install -y openssh-server openjdk-7-jdk wget
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+
+RUN apt-get update && apt-get install -y git software-properties-common maven wget openssh-server
+RUN apt-get update -y && apt-get upgrade -y
+
+RUN add-apt-repository -y ppa:webupd8team/java
+RUN apt-get update
+RUN apt-get install -y oracle-java8-set-default
+
+
+WORKDIR /root
 
 # install hadoop 2.7.2
 RUN wget https://github.com/kiwenlau/compile-hadoop/releases/download/2.7.2/hadoop-2.7.2.tar.gz && \
